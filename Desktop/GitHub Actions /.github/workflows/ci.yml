@@ -1,0 +1,38 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches:
+      - main  # або інша гілка
+  workflow_dispatch:  # Дозволяє запуск вручну
+
+jobs:
+  build:
+    runs-on: ubuntu-latest  # Вибір ОС
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js (якщо це JS/TS проєкт)
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        run: npm install  # або інша команда для встановлення залежностей
+
+      - name: Build project
+        run: npm run build  # або команда для збірки
+
+      - name: Run unit tests
+        run: npm test  # або команда для тестування
+
+      - name: Commit changes (опціонально)
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add .
+          git commit -m "Automated update from GitHub Actions" || echo "No changes to commit"
+          git push
+
